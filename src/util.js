@@ -1,15 +1,27 @@
 // Vector, geometry, polyline and geo-projection helpers.
 // Points are plain {x, y}. Screen space: +x right, +y down (north = up = -y).
+//
+// Note on portability: lengths use sqrt(x*x + y*y) rather than Math.hypot, and
+// integer powers go through ipow() rather than Math.pow. Neither Math.hypot nor
+// Math.pow is required to be correctly rounded, so their last bit can differ
+// between JS engines and the JVM; sqrt and multiplication are exact in both.
+// That keeps the Java port in java/ bit-identical to this one.
+
+import { random } from "./rng.js";
 
 export const V = {
   add: (a, b) => ({ x: a.x + b.x, y: a.y + b.y }),
   sub: (a, b) => ({ x: a.x - b.x, y: a.y - b.y }),
   mul: (a, s) => ({ x: a.x * s, y: a.y * s }),
-  len: (a) => Math.hypot(a.x, a.y),
-  dist: (a, b) => Math.hypot(a.x - b.x, a.y - b.y),
+  len: (a) => Math.sqrt(a.x * a.x + a.y * a.y),
+  dist: (a, b) => {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  },
   dot: (a, b) => a.x * b.x + a.y * b.y,
   norm: (a) => {
-    const m = Math.hypot(a.x, a.y) || 1;
+    const m = Math.sqrt(a.x * a.x + a.y * a.y) || 1;
     return { x: a.x / m, y: a.y / m };
   },
   perpR: (d) => ({ x: -d.y, y: d.x }), // right-hand perpendicular (y-down)
@@ -17,7 +29,21 @@ export const V = {
 };
 
 export const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
-export const choice = (arr) => arr[(Math.random() * arr.length) | 0];
+export const choice = (arr) => arr[(random() * arr.length) | 0];
+
+// x**n for non-negative integer n, by squaring. Only multiplications, so the
+// result is identical in JS and Java (unlike Math.pow).
+export function ipow(x, n) {
+  let r = 1;
+  let b = x;
+  let e = n;
+  while (e > 0) {
+    if (e & 1) r *= b;
+    b *= b;
+    e >>= 1;
+  }
+  return r;
+}
 
 // Minimum distance between segment p1p2 and segment p3p4 (Ericson, RTCD).
 export function segSegDist(p1, p2, p3, p4) {
