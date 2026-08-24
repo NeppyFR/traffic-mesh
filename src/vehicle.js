@@ -4,7 +4,7 @@
 // perpetually drives to a fresh (hidden) destination.
 
 import { CONFIG as C } from "./config.js";
-import { V, clamp, bezier, bezierTangent } from "./util.js";
+import { V, clamp, bezier, bezierTangent, ipow } from "./util.js";
 
 let NEXT_ID = 1;
 
@@ -71,7 +71,7 @@ export class Vehicle {
     const { a, b, T, s0, delta } = C.idm;
     const sStar = s0 + Math.max(0, this.v * T + (this.v * dv) / (2 * Math.sqrt(a * b)));
     const g = Math.max(gap, 0.1);
-    return a * (1 - Math.pow(this.v / v0, delta) - Math.pow(sStar / g, 2));
+    return a * (1 - ipow(this.v / v0, delta) - ipow(sStar / g, 2));
   }
 
   advance(accel, dt, v0) {

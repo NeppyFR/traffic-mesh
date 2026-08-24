@@ -5,10 +5,17 @@ import { Simulation } from "./simulation.js";
 import { Renderer } from "./renderer.js";
 import { gridNetwork } from "./network.js";
 import { loadCity } from "./osm.js";
+import { setSeed } from "./rng.js";
 
 const canvas = document.getElementById("stage");
 const ctx = canvas.getContext("2d");
 const el = (id) => document.getElementById(id);
+
+// The engine draws from a seeded PRNG so the test suite and the Java port stay
+// reproducible (see java/README.md). The live demo wants the opposite — fresh
+// traffic on every load — so reseed from the clock here, in the browser entry
+// point only.
+setSeed(Date.now());
 
 let net = gridNetwork();
 let sim = new Simulation(net);

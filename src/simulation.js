@@ -14,6 +14,7 @@
 import { CONFIG as C } from "./config.js";
 import { Vehicle } from "./vehicle.js";
 import { V, segSegDist } from "./util.js";
+import { random } from "./rng.js";
 
 const CONFLICT_DIST = C.carWidth * 1.4;
 
@@ -198,8 +199,8 @@ export class Simulation {
     if (n < 2) return;
     const beacons = Math.min(4, n);
     for (let k = 0; k < beacons; k++) {
-      const a = this.cars[(Math.random() * n) | 0];
-      const b = this.cars[(Math.random() * n) | 0];
+      const a = this.cars[(random() * n) | 0];
+      const b = this.cars[(random() * n) | 0];
       if (a === b) continue;
       if (V.dist(a.pose().pos, b.pose().pos) <= C.radioRange) {
         this.messages.push({ a: a.id, b: b.id, kind: "beacon" });
