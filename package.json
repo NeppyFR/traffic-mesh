@@ -1,0 +1,21 @@
+{
+  "name": "traffic-mesh",
+  "version": "0.2.0",
+  "description": "Browser simulation of vehicles that coordinate through intersections with no traffic lights, using decentralized vehicle-to-vehicle communication — on a demo grid or a real city from OpenStreetMap.",
+  "type": "module",
+  "scripts": {
+    "start": "npx --yes serve .",
+    "test": "node test/smoke.test.js && node test/unit.test.js",
+    "preview": "node scripts/preview.mjs"
+  },
+  "keywords": [
+    "traffic-simulation",
+    "v2v",
+    "autonomous-vehicles",
+    "intersection-management",
+    "openstreetmap",
+    "canvas",
+    "idm"
+  ],
+  "license": "MIT"
+}

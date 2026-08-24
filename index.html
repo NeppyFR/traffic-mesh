@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Traffic Mesh — self-organizing intersections</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="masthead">
+        <div class="title">
+          <span class="mark" aria-hidden="true"></span>
+          <h1>Traffic&nbsp;Mesh</h1>
+        </div>
+        <p class="tagline">
+          No lights, no stop signs, no central control. Every car heads for its own
+          hidden destination and runs the same rule to weave through the crossings —
+          and you can drop the whole thing onto a real city's streets.
+        </p>
+      </header>
+
+      <section class="citybar">
+        <div class="city-in">
+          <input id="city-input" type="text" placeholder="Load a city — e.g. Barcelona, or lat, lon" autocomplete="off" />
+          <button id="btn-load" class="btn">Load</button>
+          <button id="btn-grid" class="btn ghost">Demo grid</button>
+        </div>
+        <div class="chips">
+          <button class="chip" data-city="Savannah, Georgia">Savannah</button>
+          <button class="chip" data-city="Eixample, Barcelona">Barcelona</button>
+          <button class="chip" data-city="Manhattan, New York">Manhattan</button>
+          <button class="chip" data-city="Jaipur, India">Jaipur</button>
+        </div>
+        <p id="city-status" class="city-status"></p>
+      </section>
+
+      <section class="stage-wrap">
+        <div class="stage-frame">
+          <canvas id="stage" width="900" height="560"></canvas>
+          <span id="mode-label" class="mode-label">V2V mesh · demo grid</span>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <div class="readout">
+          <div class="metric">
+            <span class="metric-val" id="stat-flow">0</span>
+            <span class="metric-key">arrivals / min</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val" id="stat-speed">0</span>
+            <span class="metric-key">avg speed km/h</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val" id="stat-active">0</span>
+            <span class="metric-key">cars driving</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val" id="stat-wait">0</span>
+            <span class="metric-key">yielding now</span>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="row buttons">
+            <button id="btn-play" class="btn">Pause</button>
+            <button id="btn-reset" class="btn ghost">Reset</button>
+          </div>
+
+          <label class="slider">
+            <span class="slider-head">Cars on the map <b id="val-cars">60</b></span>
+            <input id="ctl-cars" type="range" min="5" max="160" step="5" />
+          </label>
+
+          <label class="slider">
+            <span class="slider-head">Speed limit <b id="val-speed">47</b> km/h</span>
+            <input id="ctl-speed" type="range" min="20" max="80" step="1" />
+          </label>
+
+          <label class="toggle">
+            <input id="ctl-msgs" type="checkbox" checked />
+            <span>Show V2V messages</span>
+          </label>
+
+          <label class="toggle">
+            <input id="ctl-lights" type="checkbox" />
+            <span>Traffic-light mode (compare)</span>
+          </label>
+        </div>
+
+        <p class="legend">
+          Each teal spark is one radio message hopping between two cars; the brighter
+          blue ones are cars negotiating the same intersection. Amber cars are
+          yielding — they've worked out someone closer has the right of way.
+          Destinations stay hidden: reach one and a car quietly picks another.
+        </p>
+      </aside>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
