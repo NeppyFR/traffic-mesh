@@ -1,3 +1,7 @@
 node_modules/
 .DS_Store
 *.log
+
+# Java port build output
+java/out/
+*.class

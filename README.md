@@ -70,6 +70,7 @@ index.html          markup + controls
 style.css           styling
 src/
   config.js         all tunable parameters (metric: metres, seconds)
+  rng.js            seeded PRNG (mulberry32) — see "Java port" below
   util.js           vectors, geometry, polylines, geo-projection
   network.js        graph → routable network (grid + OSM share this)
   osm.js            OpenStreetMap geocode + Overpass import
@@ -79,6 +80,7 @@ src/
   main.js           wiring, fit-to-view, city importer
 scripts/preview.mjs regenerates docs/preview.png
 test/               node smoke + unit tests
+java/               standalone Java 17 port of the engine
 ```
 
 Everything is in **metres and seconds**, so the same physics (car length, IDM gaps, speeds) apply whether you're on the demo grid or a real city.
@@ -91,6 +93,27 @@ node test/unit.test.js    # pure: OSM parser + polyline geometry (no network nee
 ```
 
 The OSM *fetch* path is browser-only and can't run in CI, so the parser is unit-tested against synthetic Overpass JSON instead.
+
+## Java port
+
+The headless engine also exists as a standalone **Java 17** program in
+[`java/`](java/README.md) — zero dependencies, no build tool, just `javac` and
+`java`. It's a direct port of `config` / `util` / `network` / `vehicle` /
+`simulation` plus the pure Overpass parser; the renderer and the live map fetch
+stay browser-only.
+
+```bash
+javac --release 17 -d java/out java/src/trafficmesh/*.java
+java -cp java/out trafficmesh.Main      # headless demo + safety assertions
+java -cp java/out trafficmesh.JavaTest  # the ported smoke + unit suites
+```
+
+The two implementations are **bit-for-bit identical**, not just similar. Both
+draw from the same seeded generator (`src/rng.js` / `Rng.java`), which is why
+`Math.random()` no longer appears in the engine. Over 18,000 ticks the JS and
+Java traces of every car's position and speed agree to the last bit of every
+double — see [java/README.md](java/README.md#determinism-the-two-engines-agree-bit-for-bit)
+for how that's verified.
 
 ## License
 
